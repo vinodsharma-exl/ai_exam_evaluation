@@ -1,0 +1,70 @@
+{
+  "$id": "answereval-ai/ai.model_answer.schema.json",
+  "title": "ai.model_answer",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "answers": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modelAnswer": {
+            "default": "",
+            "type": "string"
+          },
+          "finalAnswer": {
+            "default": "",
+            "type": "string"
+          },
+          "markingPoints": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "marks": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "description",
+                "marks"
+              ]
+            }
+          },
+          "expectsDiagram": {
+            "default": false,
+            "type": "boolean"
+          },
+          "confidence": {
+            "default": 0.8,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "label"
+        ]
+      }
+    },
+    "notes": {
+      "default": "",
+      "type": "string"
+    }
+  },
+  "required": [
+    "answers"
+  ]
+}

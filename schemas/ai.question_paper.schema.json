@@ -1,0 +1,98 @@
+{
+  "$id": "answereval-ai/ai.question_paper.schema.json",
+  "title": "ai.question_paper",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "questions": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "default": "",
+            "type": "string"
+          },
+          "maxMarks": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "default": "theory",
+            "type": "string",
+            "enum": [
+              "theory",
+              "numerical",
+              "mixed"
+            ]
+          },
+          "confidence": {
+            "default": 0.8,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "label"
+        ]
+      }
+    },
+    "choiceRules": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "questions": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countBest": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "text": {
+            "default": "",
+            "type": "string"
+          }
+        },
+        "required": [
+          "questions",
+          "countBest"
+        ]
+      }
+    },
+    "totalMarks": {
+      "default": null,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "notes": {
+      "default": "",
+      "type": "string"
+    }
+  },
+  "required": [
+    "questions"
+  ]
+}

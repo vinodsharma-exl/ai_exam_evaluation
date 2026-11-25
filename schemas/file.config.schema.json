@@ -1,0 +1,408 @@
+{
+  "$id": "answereval-ai/file.config.schema.json",
+  "title": "file.config",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "privacyNoticeAcceptedAt": {
+      "default": null,
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+          "description": "ISO-8601 timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stages": {
+      "type": "object",
+      "properties": {
+        "ocr": {
+          "type": "object",
+          "properties": {
+            "providerId": {
+              "type": "string",
+              "enum": [
+                "gemini",
+                "groq",
+                "openrouter",
+                "mistral",
+                "openai",
+                "anthropic",
+                "custom",
+                "mock"
+              ]
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "providerId",
+            "model"
+          ]
+        },
+        "evaluation": {
+          "type": "object",
+          "properties": {
+            "providerId": {
+              "type": "string",
+              "enum": [
+                "gemini",
+                "groq",
+                "openrouter",
+                "mistral",
+                "openai",
+                "anthropic",
+                "custom",
+                "mock"
+              ]
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "providerId",
+            "model"
+          ]
+        }
+      },
+      "required": [
+        "ocr",
+        "evaluation"
+      ]
+    },
+    "providers": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "gemini",
+          "groq",
+          "openrouter",
+          "mistral",
+          "openai",
+          "anthropic",
+          "custom",
+          "mock"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "default": true,
+            "type": "boolean"
+          },
+          "baseUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "models": {
+            "default": {},
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "capabilities": {
+                  "type": "object",
+                  "properties": {
+                    "supportsVision": {
+                      "type": "boolean"
+                    },
+                    "maxImagesPerRequest": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "requestsPerMinute": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 10000
+                    },
+                    "dailyLimit": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "contextWindow": {
+                      "type": "integer",
+                      "minimum": 1024,
+                      "maximum": 9007199254740991
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer",
+                      "minimum": 256,
+                      "maximum": 9007199254740991
+                    },
+                    "supportsJsonMode": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "supportsVision",
+                    "maxImagesPerRequest",
+                    "requestsPerMinute",
+                    "dailyLimit",
+                    "contextWindow",
+                    "maxOutputTokens",
+                    "supportsJsonMode"
+                  ]
+                },
+                "userEdited": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "lastTest": {
+                  "type": "object",
+                  "properties": {
+                    "at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO-8601 timestamp"
+                    },
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "vision": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "latencyMs": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "at",
+                    "ok",
+                    "vision"
+                  ]
+                }
+              },
+              "required": [
+                "capabilities"
+              ]
+            }
+          },
+          "maxConcurrent": {
+            "default": 1,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "extraHeaders": {
+            "default": {},
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "grading": {
+      "type": "object",
+      "properties": {
+        "strictness": {
+          "default": "standard",
+          "type": "string",
+          "enum": [
+            "lenient",
+            "standard",
+            "strict"
+          ]
+        },
+        "allowHalfMarks": {
+          "default": true,
+          "type": "boolean"
+        },
+        "handwritingHint": {
+          "default": "",
+          "type": "string",
+          "maxLength": 300
+        },
+        "languageHint": {
+          "default": "",
+          "type": "string",
+          "maxLength": 200
+        },
+        "lowConfidenceThreshold": {
+          "default": 0.6,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "batchQuestions": {
+          "default": true,
+          "type": "boolean"
+        },
+        "maxQuestionsPerBatch": {
+          "default": 8,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      }
+    },
+    "imageQuality": {
+      "default": "medium",
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "ui": {
+      "default": {
+        "theme": "system",
+        "confirmBeforeProcessing": true,
+        "lastOpenedExamId": null
+      },
+      "type": "object",
+      "properties": {
+        "theme": {
+          "default": "system",
+          "type": "string",
+          "enum": [
+            "light",
+            "dark",
+            "system"
+          ]
+        },
+        "confirmBeforeProcessing": {
+          "default": true,
+          "type": "boolean"
+        },
+        "lastOpenedExamId": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "institution": {
+      "default": {
+        "name": "",
+        "department": "",
+        "logoFile": null
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "",
+          "type": "string",
+          "maxLength": 200
+        },
+        "department": {
+          "default": "",
+          "type": "string",
+          "maxLength": 200
+        },
+        "logoFile": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "gradeBands": {
+      "default": [
+        {
+          "minPercent": 90,
+          "label": "A+"
+        },
+        {
+          "minPercent": 80,
+          "label": "A"
+        },
+        {
+          "minPercent": 70,
+          "label": "B"
+        },
+        {
+          "minPercent": 60,
+          "label": "C"
+        },
+        {
+          "minPercent": 50,
+          "label": "D"
+        },
+        {
+          "minPercent": 40,
+          "label": "E"
+        },
+        {
+          "minPercent": 0,
+          "label": "F"
+        }
+      ],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "minPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 10
+          }
+        },
+        "required": [
+          "minPercent",
+          "label"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "stages",
+    "grading"
+  ]
+}

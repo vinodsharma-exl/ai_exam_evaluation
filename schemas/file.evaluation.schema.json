@@ -1,0 +1,423 @@
+{
+  "$id": "answereval-ai/file.evaluation.schema.json",
+  "title": "file.evaluation",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "examId": {
+      "type": "string",
+      "description": "Folder-safe identifier"
+    },
+    "studentId": {
+      "type": "string",
+      "description": "Folder-safe identifier"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "strictness": {
+          "type": "string",
+          "enum": [
+            "lenient",
+            "standard",
+            "strict"
+          ]
+        },
+        "allowHalfMarks": {
+          "type": "boolean"
+        },
+        "promptVersion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "strictness",
+        "allowHalfMarks",
+        "promptVersion"
+      ]
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "questionNumber": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24
+          },
+          "maxMarks": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "recommended",
+              "needs_review",
+              "not_attempted",
+              "failed"
+            ]
+          },
+          "recommendedMarks": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "criteria": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "maxMarks": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1000
+                },
+                "awarded": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1000
+                },
+                "comment": {
+                  "default": "",
+                  "type": "string",
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "id",
+                "description",
+                "maxMarks",
+                "awarded"
+              ]
+            }
+          },
+          "correct": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500
+            }
+          },
+          "missing": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500
+            }
+          },
+          "feedback": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "reviewNote": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "flags": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "low_confidence",
+                "illegible_text",
+                "diagram_not_assessed",
+                "marks_clamped",
+                "answer_changed_since_evaluation",
+                "possible_wrong_question_number",
+                "manual_text",
+                "model_flagged"
+              ]
+            }
+          },
+          "by": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "providerId": {
+                    "type": "string",
+                    "enum": [
+                      "gemini",
+                      "groq",
+                      "openrouter",
+                      "mistral",
+                      "openai",
+                      "anthropic",
+                      "custom",
+                      "mock"
+                    ]
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "providerId",
+                  "model"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cacheKey": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "answerTextHash": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evaluatedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                "description": "ISO-8601 timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "detail": {
+                    "type": "string"
+                  },
+                  "resumeAt": {
+                    "type": "number"
+                  },
+                  "at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                    "description": "ISO-8601 timestamp"
+                  }
+                },
+                "required": [
+                  "code",
+                  "at"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "history": {
+            "default": [],
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "recommendedMarks": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "confidence": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "by": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "providerId": {
+                          "type": "string",
+                          "enum": [
+                            "gemini",
+                            "groq",
+                            "openrouter",
+                            "mistral",
+                            "openai",
+                            "anthropic",
+                            "custom",
+                            "mock"
+                          ]
+                        },
+                        "model": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
+                      },
+                      "required": [
+                        "providerId",
+                        "model"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "evaluatedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO-8601 timestamp"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "feedback": {
+                  "default": "",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "recommendedMarks",
+                "confidence",
+                "by",
+                "evaluatedAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "questionNumber",
+          "maxMarks",
+          "status",
+          "recommendedMarks",
+          "confidence",
+          "by",
+          "evaluatedAt"
+        ]
+      }
+    },
+    "totals": {
+      "type": "object",
+      "properties": {
+        "recommended": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "droppedByChoiceRules": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24
+          }
+        }
+      },
+      "required": [
+        "recommended",
+        "max"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "examId",
+    "studentId",
+    "settings",
+    "questions",
+    "totals",
+    "createdAt",
+    "updatedAt"
+  ]
+}

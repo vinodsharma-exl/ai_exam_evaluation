@@ -1,0 +1,245 @@
+{
+  "$id": "answereval-ai/file.final.schema.json",
+  "title": "file.final",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "examId": {
+      "type": "string",
+      "description": "Folder-safe identifier"
+    },
+    "studentId": {
+      "type": "string",
+      "description": "Folder-safe identifier"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "finalized"
+      ]
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "questionNumber": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24
+          },
+          "maxMarks": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "aiMarks": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "finalMarks": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "overridden": {
+            "type": "boolean"
+          },
+          "comment": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "privateNote": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "dropped": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "questionNumber",
+          "maxMarks",
+          "aiMarks",
+          "finalMarks",
+          "overridden"
+        ]
+      }
+    },
+    "total": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "maxTotal": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "grade": {
+      "default": "",
+      "type": "string",
+      "maxLength": 10
+    },
+    "overallComment": {
+      "default": "",
+      "type": "string",
+      "maxLength": 4000
+    },
+    "finalizedAt": {
+      "default": null,
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+          "description": "ISO-8601 timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finalizedBy": {
+      "default": null,
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 120
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "audit": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+            "description": "ISO-8601 timestamp"
+          },
+          "by": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "edit_marks",
+              "edit_comment",
+              "accept_ai",
+              "finalize",
+              "unfinalize",
+              "reevaluate_applied"
+            ]
+          },
+          "questionNumber": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "from": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "to": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "at",
+          "by",
+          "action",
+          "questionNumber",
+          "from",
+          "to"
+        ]
+      }
+    },
+    "reportGeneratedAt": {
+      "default": null,
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+          "description": "ISO-8601 timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "examId",
+    "studentId",
+    "status",
+    "questions",
+    "total",
+    "maxTotal",
+    "percentage",
+    "createdAt",
+    "updatedAt"
+  ]
+}

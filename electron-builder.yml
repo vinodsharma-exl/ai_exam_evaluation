@@ -1,0 +1,50 @@
+# Windows installer for AnswerEval AI (one .exe, no Node/Python needed on the professor's PC).
+# Build: npm run dist  →  release/AnswerEval-AI-Setup-<version>.exe
+appId: ai.answereval.desktop # must match app.setAppUserModelId in src/main/main.ts
+productName: AnswerEval AI
+copyright: Copyright © 2026
+
+directories:
+  output: release
+  buildResources: build
+
+# Only the built app and production dependencies are packaged. React, Vite, pdf.js etc. are bundled
+# into out/ at build time (devDependencies), so they are not shipped twice.
+files:
+  - out/**
+  - package.json
+  - '!**/*.map'
+  - '!**/{test,tests,__tests__,docs,example,examples}/**'
+  - '!**/*.{md,markdown,ts,tsx}'
+asar: true
+
+extraResources:
+  - from: docs/PROFESSOR_GUIDE.md
+    to: PROFESSOR_GUIDE.md
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.png
+  # No code-signing certificate yet: Windows SmartScreen will show "Windows protected your PC" →
+  # "More info" → "Run anyway" on first install. See docs/BUILD.md to sign.
+  signAndEditExecutable: true
+
+nsis:
+  oneClick: false # show the normal wizard
+  perMachine: false # install for the current user only: no administrator rights needed
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: AnswerEval AI
+  uninstallDisplayName: AnswerEval AI
+  artifactName: AnswerEval-AI-Setup-${version}.${ext}
+  # The professor's data lives in Documents/AnswerEvalAI and is NEVER removed by the uninstaller.
+  # This only removes Electron's cache/logs folder in AppData.
+  deleteAppDataOnUninstall: false
+  # Installer/uninstaller icons default to the app icon (converted from build/icon.png).
+
+# No auto-update server: updates are a new installer run over the old one (data is kept).
+publish: null

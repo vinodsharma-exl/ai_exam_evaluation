@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-electron/
+release/
+out/
+coverage/
+*.log
+.DS_Store
+# never commit real student data or keys
+AnswerEvalAI/
+secrets.bin
